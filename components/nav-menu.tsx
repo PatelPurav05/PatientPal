@@ -12,8 +12,7 @@ import {
 
 const items = [
   { href: "/", label: "Home" },
-  { href: "/about", label: "About" },
-  { href: "/auth/sign-in", label: "Sign In" },
+  { href: "/auth", label: "Sign In" },
 ]
 
 export function NavMenu() {

@@ -2,7 +2,7 @@ import Link from "next/link"
 import { ArrowRight } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { NavMenu } from "@/components/nav-menu"
 import { AnimatedImage } from "@/components/animated-image"
 import { PublicationLogos } from "@/components/publication-logos"
@@ -36,7 +36,7 @@ export default function HomePage() {
                 size="lg"
                 className="bg-pink-400 hover:bg-pink-500 text-white rounded-full px-8 shadow-lg hover:shadow-xl transition-all"
               >
-                <Link href="/auth/sign-in">
+                <Link href="/auth">
                   SIGN IN
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
@@ -45,9 +45,10 @@ export default function HomePage() {
           </div>
           <div className="relative h-[400px] animate-fade-in-left">
             <AnimatedImage
-              src={IMAGES.hero}
-              alt="Two medical professionals reviewing a patient's health records with medical icons"
-              fill
+              src={IMAGES.hero.src}
+              alt="Medical professionals reviewing health records"
+              width={IMAGES.hero.width}
+              height={IMAGES.hero.height}
               className="object-contain"
             />
           </div>
@@ -63,9 +64,10 @@ export default function HomePage() {
             <div className="grid md:grid-cols-2 gap-12 items-center">
               <div className="relative h-[400px] order-2 md:order-1">
                 <AnimatedImage
-                  src={IMAGES.started}
+                  src={IMAGES.started.src}
                   alt="Medical professional working on laptop with medical symbols and laboratory equipment"
-                  fill
+                  width={IMAGES.started.width}
+                  height={IMAGES.started.height}
                   className="object-contain"
                 />
               </div>
@@ -76,7 +78,7 @@ export default function HomePage() {
                   to learn more about our records.
                 </CardDescription>
                 <Button asChild variant="secondary" size="lg" className="rounded-full">
-                  <Link href="/auth/sign-in">
+                  <Link href="/auth">
                     Get Started
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
@@ -98,9 +100,10 @@ export default function HomePage() {
               </div>
               <div className="relative h-[400px]">
                 <AnimatedImage
-                  src={IMAGES.features}
+                  src={IMAGES.features.src}
                   alt="Doctor with clipboard and stethoscope next to medical symbols and laboratory flask"
-                  fill
+                  width={IMAGES.features.width}
+                  height={IMAGES.features.height}
                   className="object-contain"
                 />
               </div>

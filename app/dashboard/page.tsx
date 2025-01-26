@@ -1,48 +1,27 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { FileUpload } from "@/components/dashboard/file-upload"
-import { ReportSummary } from "@/components/dashboard/report-summary"
-import { QASection } from "@/components/dashboard/qa-section"
-import { TimelineGraph } from "@/components/dashboard/timeline-graph"
+"use client"
+
+import { Button } from "@/components/ui/button"
+import { ProtectedRoute } from "@/components/auth/protected-route"
+import { useAuth } from "@/hooks/useAuth"
 
 export default function DashboardPage() {
+  const { signOut } = useAuth()
+
   return (
-    <div className="space-y-6">
-      <h1 className="text-3xl font-bold">Dashboard</h1>
-      <div className="grid gap-6 md:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle>Upload Reports</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <FileUpload />
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle>Report Summary</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ReportSummary />
-          </CardContent>
-        </Card>
+    <ProtectedRoute>
+      <div className="min-h-screen bg-gray-100 p-8">
+        <div className="max-w-4xl mx-auto">
+          <div className="flex justify-between items-center mb-8">
+            <h1 className="text-3xl font-bold">Dashboard</h1>
+            <Button onClick={signOut}>Sign Out</Button>
+          </div>
+          <div className="bg-white p-6 rounded-lg shadow-md">
+            <p className="text-xl mb-4">Welcome to your PatientPal dashboard!</p>
+            <p>This is a placeholder for future functionality.</p>
+          </div>
+        </div>
       </div>
-      <Card>
-        <CardHeader>
-          <CardTitle>Ask Questions</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <QASection />
-        </CardContent>
-      </Card>
-      <Card>
-        <CardHeader>
-          <CardTitle>Health Timeline</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <TimelineGraph />
-        </CardContent>
-      </Card>
-    </div>
+    </ProtectedRoute>
   )
 }
 
