@@ -14,17 +14,27 @@ export function ReportSummary() {
     setError(null)
 
     try {
-      const response = await fetch("/api/summarize")
-      const data = await response.json()
+      const response = await fetch("/api/summarize", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ content: "Please summarize the uploaded medical reports." }),
+      })
 
-      if (response.ok) {
-        setSummary(data.summary)
-      } else {
-        setError(data.error || "Failed to generate summary")
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
       }
+
+      const data = await response.json()
+      if (data.error) {
+        throw new Error(data.error)
+      }
+
+      setSummary(data.summary)
     } catch (error) {
       console.error("Error generating summary:", error)
-      setError("An unexpected error occurred")
+      setError(error instanceof Error ? error.message : "An unexpected error occurred")
     } finally {
       setLoading(false)
     }
@@ -35,16 +45,16 @@ export function ReportSummary() {
       <Button onClick={generateSummary} disabled={loading}>
         {loading ? "Generating..." : "Generate Summary"}
       </Button>
-      {summary && (
-        <div className="bg-white p-4 rounded-md shadow">
-          <h3 className="font-semibold mb-2">Summary:</h3>
-          <p>{summary}</p>
-        </div>
-      )}
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
           <strong className="font-bold">Error: </strong>
           <span className="block sm:inline">{error}</span>
+        </div>
+      )}
+      {summary && (
+        <div className="bg-white p-4 rounded-md shadow">
+          <h3 className="font-semibold mb-2">Summary:</h3>
+          <p>{summary}</p>
         </div>
       )}
     </div>

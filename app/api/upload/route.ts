@@ -1,16 +1,38 @@
-import { NextResponse } from "next/server"
+import { type NextRequest, NextResponse } from "next/server"
+import { processDocument } from "@/lib/ai-utils"
 
-export async function POST(request: Request) {
-  const formData = await request.formData()
+export const config = {
+  runtime: "edge",
+}
+
+const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB
+
+export async function POST(req: NextRequest) {
+  const formData = await req.formData()
   const file = formData.get("file") as File
 
   if (!file) {
     return NextResponse.json({ error: "No file uploaded" }, { status: 400 })
   }
 
-  // Here you would typically save the file to a storage service
-  // and possibly trigger the processing of the file for summarization
+  if (file.type !== "application/pdf") {
+    return NextResponse.json({ error: "Invalid file type. Please upload a PDF." }, { status: 400 })
+  }
 
-  return NextResponse.json({ message: "File uploaded successfully" })
+  if (file.size > MAX_FILE_SIZE) {
+    return NextResponse.json({ error: "File too large. Maximum size is 5MB." }, { status: 400 })
+  }
+
+  try {
+    const fileBuffer = await file.arrayBuffer()
+    console.log("File received:", file.name, file.type, file.size)
+    console.log("File content length:", fileBuffer.byteLength)
+
+    await processDocument(Buffer.from(fileBuffer))
+    return NextResponse.json({ message: "File processed successfully" })
+  } catch (error) {
+    console.error("Error processing file:", error)
+    return NextResponse.json({ error: "Failed to process file" }, { status: 500 })
+  }
 }
 

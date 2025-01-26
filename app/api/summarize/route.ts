@@ -1,52 +1,19 @@
 import { NextResponse } from "next/server"
-import OpenAI from "openai"
+import { generateSummary } from "@/lib/ai-utils"
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-})
+export async function POST(request: Request) {
+  const { content } = await request.json()
 
-export async function GET() {
-  if (!process.env.OPENAI_API_KEY) {
-    return NextResponse.json({ error: "OpenAI API key is not set" }, { status: 500 })
+  if (!content) {
+    return NextResponse.json({ error: "No content provided" }, { status: 400 })
   }
 
   try {
-    // In a real application, you would fetch the actual report content here
-    const reportContent = "This is a sample blood report content."
-
-    const completion = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
-      messages: [
-        {
-          role: "system",
-          content: "You are a helpful assistant that summarizes medical reports.",
-        },
-        {
-          role: "user",
-          content: `Please summarize the following blood report: ${reportContent}`,
-        },
-      ],
-    })
-
-    if (!completion.choices || completion.choices.length === 0) {
-      throw new Error("No summary generated")
-    }
-
-    const summary = completion.choices[0].message.content
-
-    if (!summary) {
-      throw new Error("Summary is empty")
-    }
-
+    const summary = await generateSummary(content)
     return NextResponse.json({ summary })
   } catch (error) {
     console.error("Error generating summary:", error)
-
-    if (error instanceof Error) {
-      return NextResponse.json({ error: error.message }, { status: 500 })
-    } else {
-      return NextResponse.json({ error: "An unexpected error occurred" }, { status: 500 })
-    }
+    return NextResponse.json({ error: "Failed to generate summary" }, { status: 500 })
   }
 }
 
