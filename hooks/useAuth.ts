@@ -16,6 +16,7 @@ import { auth, db } from "@/lib/firebase"
 export const useAuth = () => {
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+  const [user, setUser] = useState<User | null>(null)
   const router = useRouter()
 
   const storeAuthToken = useCallback(async () => {
@@ -98,6 +99,7 @@ export const useAuth = () => {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      setUser(user)
       if (user) {
         await storeAuthToken()
       } else {
@@ -108,6 +110,6 @@ export const useAuth = () => {
     return () => unsubscribe()
   }, [storeAuthToken])
 
-  return { signUp, signIn, signOut, error, loading }
+  return { user, signUp, signIn, signOut, error, loading }
 }
 
